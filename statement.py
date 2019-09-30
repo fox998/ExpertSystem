@@ -13,7 +13,7 @@ class StatementValue:
         self.value = value
 
     def is_computed(self):
-        return self.value is bool
+        return isinstance(self.value, bool)
 
 
 def init_from_facts(initial_facts):
