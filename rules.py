@@ -2,25 +2,37 @@
 
 from pyparsing import *
 
-ops = Or(['^', '|', '+'])
-fact = Optional('!') + Optional('(') + Optional('!') + Word(alphas) + Optional(')')
-exp_simple = Optional('(') + fact + Optional(ops + fact)  + Optional(')')
-exp = exp_simple + Optional(ops + exp_simple)
-imply_rule = (exp + '=>' + exp)('implies')
-equivalent_rule = (exp + '<=>' + exp)('equivalents')
+from parse_expert_data import ExpertData
+from parse_expert_data import parse_expert_data
+
+from statement import init_form_initial_facts_arr
+from statement import init_from_implies_arr
+from statement import StatementMap
 
 
-def parse_rules_to_tokens(rules):
-    implies_list = []
-    equivalent_list = []
-    for rule in rules:
-        if '<=>' in rule:
-            implies_list.append(imply_rule.parseString(rule))
-            print(f': {implies_list[-1]}')
-        else:
-            equivalent_list.append(equivalent_rule.parseString(rule))
+def solve_map(Statements):
+    true_facts = [fact for fact in Statements.keys() if (Statements[fact].is_computed() and Statements[fact].value == True)]
+    print(f'True facts: {true_facts}')
 
+    
+
+    return true_facts
 
 
 
-rules = ['C=>E', 'A+B+C=>D', 'A|B=>C', 'A+!B=>F', 'C|!G=>H', 'V^W=>X', 'A+B=>Y+Z', 'C|D=>X|V', 'E+F=>!V']
+
+
+
+
+############ test stuff ###################
+def test():
+    expert_data = parse_expert_data("input.txt")
+    init_form_initial_facts_arr(expert_data.initial_facts)
+    init_from_implies_arr(expert_data.implies_arr)
+    for key, val in StatementMap.Statements.items():
+        print(f'key: {key}, val {val.value}')
+
+    true_facts = solve_map(StatementMap.Statements)
+
+
+test()
