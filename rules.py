@@ -12,8 +12,8 @@ from statement import StatementMap, StatementValue
 from backward_chaining import is_resolvable, check_term, backward_chaining
 
 # Tasks:
-# ( ) ))))))))))))))
-# backward chaining only with ! and &
+# complete open_parentheses
+# add () in backward chaining
 
 def is_queries_satisfied(Statements: dict, queries: list):
     '''Checks if we have computed all queries and have nothing to do else) '''
@@ -27,12 +27,12 @@ def is_queries_satisfied(Statements: dict, queries: list):
 
 def solve_map(Statements: dict, queries: list) -> dict:
     '''Computes rules until we have computed all of our queries.'''
-    # for _ in range(2):
+    computed_keys = [fact for fact in Statements.keys() if Statements[fact].is_computed()]
+    old_size = len(computed_keys)
     while not is_queries_satisfied(Statements, queries):
         uncomputed = [key for key in Statements.keys() if not Statements[key].is_computed()]
         for key in uncomputed:
             if is_resolvable(Statements[key].value, Statements):
-                # print(f'{Statements[key].value} is OK.')
                 result = check_term(Statements[key].value, Statements)
                 # print(f'check term {Statements[key].value}: {result}')
                 if len(key) == 1:
@@ -41,25 +41,27 @@ def solve_map(Statements: dict, queries: list) -> dict:
                     backward_chaining(Statements, key, result)
         
         computed_keys = [fact for fact in Statements.keys() if Statements[fact].is_computed()]
-        for key, val in Statements.items():
-            print(f'val {val.value} =>  {key}   (key)')
+        if len(computed_keys) == old_size:
+            break
+        old_size = len(computed_keys)
+        # for key, val in Statements.items():
+        #     print(f'val {val.value} =>  {key}   (key)')
         print(f'computed: {computed_keys}\n *** \n')
        
     return 
 
 
-
 ############ test stuff ###################
 def test():
-    expert_data = parse_expert_data("input2.txt")
+    expert_data = parse_expert_data("input.txt")
     init_form_initial_facts_arr(expert_data.initial_facts)
     init_from_implies_arr(expert_data.implies_arr)
 
-    print(f'queries: {expert_data.queries}')
     for key, val in StatementMap.Statements.items():
         print(f'val {val.value} =>  {key}   (key)')
 
-    queries  = ['D'] # save to expert_data.queries in this format
+    # queries  = ['D'] # save to expert_data.queries in this format
+    queries  = ['G', 'V', 'X'] 
     solve_map(StatementMap.Statements, queries)
 
 
