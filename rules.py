@@ -20,9 +20,18 @@ def is_queries_satisfied(Statements: dict, queries: list):
     c = 0
     for query in queries:
         if query in Statements.keys() and Statements[query].is_computed():
-            print(f'{query} is {Statements[query].value}')
+            # print(f'{query} is {Statements[query].value}')
             c = c + 1
     return (c == len(queries))
+
+
+def print_result(Statements, queries):
+    for query in queries:
+        if query in Statements.keys() and Statements[query].is_computed():
+            print(f'{query} is {Statements[query].value}')
+        else:
+            print(f'{query} cannot be computed with given rules.')
+    return
 
 
 def solve_map(Statements: dict, queries: list) -> dict:
@@ -46,7 +55,7 @@ def solve_map(Statements: dict, queries: list) -> dict:
         old_size = len(computed_keys)
         # for key, val in Statements.items():
         #     print(f'val {val.value} =>  {key}   (key)')
-        print(f'computed: {computed_keys}\n *** \n')
+        # print(f'computed: {computed_keys}\n')
        
     return 
 
@@ -57,12 +66,12 @@ def test():
     init_form_initial_facts_arr(expert_data.initial_facts)
     init_from_implies_arr(expert_data.implies_arr)
 
-    for key, val in StatementMap.Statements.items():
-        print(f'val {val.value} =>  {key}   (key)')
+    # for key, val in StatementMap.Statements.items():
+    #     print(f'val {val.value} =>  {key}   (key)')
 
     # queries  = ['D'] # save to expert_data.queries in this format
     queries  = ['G', 'V', 'X'] 
     solve_map(StatementMap.Statements, queries)
-
+    print_result(StatementMap.Statements, queries)
 
 test()

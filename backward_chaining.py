@@ -1,40 +1,70 @@
 #!/usr/bin/env python3
 
 from statement import StatementValue
-from parentheses import check_parentheses_order, find_outer_indexes
+from parentheses import check_parentheses_order, find_close_parenthesis_ind
 
 
-def open_parentheses(term: str, Statements: dict):
-    if not check_parentheses_order(term):
-        raise Exception('Wrong parentheses')
-    start, end = find_outer_indexes(term)
-    bracketed_term = term[start+1:end] # (A+B), (A+B)+C, A+(B+C)+(D+E)
-    if start == 0 and end == len(term) - 1:
-        return check_term(bracketed_term, Statements)
-    
-    if start != 0 and term[start-1] in '!+|^':
-        pass #s before term !+^| bracketed_term
-    if end < len(term)-1 and term[end+1] in '!+|^':
-        pass
+def get_next_term(s: str):
+    if s[0] not in '(!':
+        return [1,  s[0]]
+    if s[0] == '!':
+        shift, next_term = get_next_term(s[1:])
+        return [shift + 1, '!'+ next_term]
+    counter = 1
+    i = 0
+    while counter != 0:
+        i = i + 1
+        if s[i] == '(':
+            counter = counter + 1
+        elif s[i] == ')':
+            counter = counter - 1
+    end_index = i
+    return [len(s[:end_index+1]), s[:end_index+1]]
 
 
-# order not -> and -> or  -> xor
+def do_operation(operation, operand1, operand2):
+    if operation == '+':
+        return (operand1 and operand2)
+    elif operation == '|':
+        return (operand1 or operand2)
+    elif operation == '^':
+        return (operand1 ^ operand2)
+
+
 def check_term(term: str, Statements: dict):
     '''Checks if left part = term is true / false'''
-    if '(' in term:
-        return open_parentheses(term, Statements)
-    if '^' in term:
-        term_parts = term.split('^', 1)
-        return (check_term(term_parts[0], Statements) ^ check_term(term_parts[1], Statements))
-    elif '|' in term:
-        term_parts = term.split('|', 1)
-        return (check_term(term_parts[0], Statements) or check_term(term_parts[1], Statements))
-    elif '+' in term:
-        term_parts = term.split('+', 1)
-        return (check_term(term_parts[0], Statements) and check_term(term_parts[1], Statements))
-    elif term[0] == '!':
-        return not check_term(term[1:], Statements)
-    return Statements[term[0]].value
+    # if not check_parentheses_order(term): # not here, its recursive
+    #     raise Exception('Wrong parentheses')
+    stack = []
+    i = 0
+    while i  < len(term):
+        if len(term[i:]) == 1:
+            return Statements[term[i:]].value
+        if term[i] == '!':
+            shift, operand = get_next_term(term[i+1:])
+            stack.append(not check_term(operand, Statements))
+        elif term[i] in '|+^':
+            operand1 = stack.pop()
+            shift, operand2 = get_next_term(term[i+1:])
+            stack.append(do_operation(term[i], operand1, check_term(operand2, Statements)))
+            shift = shift + 1
+        elif term[i] == '(':
+            end_ind = find_close_parenthesis_ind(term[i+1:])
+            stack.append(check_term(term[i+1:i+end_ind+1], Statements))
+            shift = end_ind + 2
+        else:
+            shift, operand = get_next_term(term)
+            # print(f'operand = {operand}, shift = {shift}')
+            stack.append(check_term(operand, Statements))
+        # print(f'stack = {stack}')
+        # print(f'{term[i:]} ----> {term[i+shift:]}')
+        i = i + shift
+    if len(stack) != 1:
+        raise Exception('Grammar error.')
+    if not isinstance(stack[0], bool):
+        return Statements[stack[0]].value
+    return stack[0]
+
 
 
 def is_resolvable(term: str, Statements: dict):
