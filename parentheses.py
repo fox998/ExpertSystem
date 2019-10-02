@@ -39,9 +39,10 @@ def find_outer_indexes(term: str):
 
 def get_next_term(s: str):
     if s[0] not in '(!':
-        return s[0]
+        return [1,  s[0]]
     if s[0] == '!':
-        return get_next_term(s[1:])
+        shift, next_term = get_next_term(s[1:])
+        return [shift + 1, '!'+ next_term]
     counter = 1
     i = 0
     while counter != 0:
@@ -51,18 +52,4 @@ def get_next_term(s: str):
         elif s[i] == ')':
             counter = counter - 1
     end_index = i
-    return s[:end_index+1]
-
-
-if __name__ == "__main__":
-    s = '!(A+B)'
-    print(f'{s}: {get_next_term(s)}')
-    s = '!(A)'
-    print(f'{s}: {get_next_term(s)}')
-    s = '!A'
-    print(f'{s}: {get_next_term(s)}')
-    s = '!!(A+B)'
-    print(f'{s}: {get_next_term(s)}')
-    s = '!!A'
-    print(f'{s}: {get_next_term(s)}')
-    print(find_close_parenthesis_ind('A+B)'))
+    return [len(s[:end_index+1]), s[:end_index+1]]
