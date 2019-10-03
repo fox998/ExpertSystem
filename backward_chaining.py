@@ -27,22 +27,47 @@ def split_terms(term: str) -> list:
     i = 0
     while i < len(term):
         shift, item = get_next_item(term[i:])
-        # print(f', term = {term[i:]}, shift = {shift}, mini_term = {item}')
         stack.append(item)
         i = i + shift
     return stack
 
 
+def resolve_xor(Statements, stack, boolean_value):
+    ind = stack.index('^')
+    left = stack[:ind]
+    right = stack[ind+1:]
+    op1 = check_term(temp_helper(left), Statements)
+    op2 = check_term(temp_helper(right), Statements)
+
+    if isinstance(op1, bool) and isinstance(op2, bool):
+        if op1 ^ op2 != boolean_value:
+            raise Exception('Given grammar is incorrect:{left}={op1}, \
+                {right}={op2}, but {left}^{right} must be {boolean_value}')
+        else:
+            return
+         
+    if op1 == None and op2 == None:
+        pass # second layer difficulty
+
+    if boolean_value:
+        if op1 == None: # then op1 must be inverse to op2
+            backward_chaining(Statements, left, not op2)
+        elif op2 == None:
+            backward_chaining(Statements, right, not op1)
+    else:
+        if op1 == None: # then op1 must be same as op2
+            backward_chaining(Statements, left, op2)
+        elif op2 == None:
+            backward_chaining(Statements, right, op1)
+
+
 def resolve_and(Statements, stack, boolean_value):
     '''Given that key(variable) is for ex A+B and B=True,  find C'''
-    op1, op2 = None, None
     ind = stack.index('+')
     left = stack[:ind]
     right = stack[ind+1:]
-    if is_resolvable(temp_helper(left), Statements):
-        op1 = check_term(temp_helper(left), Statements)
-    if is_resolvable(temp_helper(right), Statements):
-        op2 = check_term(temp_helper(right), Statements)
+    op1 = check_term(temp_helper(left), Statements)
+    op2 = check_term(temp_helper(right), Statements)
        
     if op1 == None and op2 == True:
         if len(temp_helper(left)) == 1: 
@@ -76,7 +101,7 @@ def or_case_true(Statements, left, right):
         return
     elif op1 == False and op2 == False:
         raise Exception('Given grammar is incorrect:{left}={op1}, \
-            {right}={op2}, but {left}|{rigth} must be {boolean_value}')
+            {right}={op2}, but {left}|{right} must be {boolean_value}')
     elif op1 == False:
         backward_chaining(Statements, right, True)
     elif op2 == False:
@@ -103,7 +128,7 @@ def backward_chaining(Statements, stack, boolean_value): # mb instead of key jus
     if '|' in stack:
         resolve_or(Statements, stack, boolean_value)
     elif '^' in stack:
-        pass
+        resolve_xor(Statements, stack, boolean_value)
     elif '+' in stack:
         resolve_and(Statements, stack, boolean_value)
     elif '!' in stack:
@@ -115,19 +140,3 @@ def backward_chaining(Statements, stack, boolean_value): # mb instead of key jus
             backward_chaining(Statements, split_terms(stack[0]), boolean_value)
     return
 
-
-if __name__ == "__main__":
-    s = '!(!(!A))'
-    print(f'{s} -> {split_terms(s)}')
-    s = '!(A+B)'
-    print(f'{s} -> {split_terms(s)}')
-    s = 'A'
-    print(f'{s} -> {split_terms(s)}')
-    s = '!(A)'
-    print(f'{s} -> {split_terms(s)}')
-    s = '(!A)'
-    print(f'{s} -> {split_terms(s)}')
-    s = '!(A|B)+!C'
-    print(f'{s} -> {split_terms(s)}')
-    s = 'A^(B+C)|((D))'
-    print(f'{s} -> {split_terms(s)}')

@@ -12,6 +12,9 @@ from statement import StatementMap, StatementValue
 from forward_chaining import is_resolvable, check_term
 from backward_chaining import backward_chaining
 
+import sys
+from functools import reduce
+
 # Tasks:
 
 # rewrite check_term with split_terms
@@ -47,11 +50,12 @@ def solve_map(Statements: dict, queries: list) -> dict:
     computed_keys = [fact for fact in Statements.keys() if Statements[fact].is_computed()]
     old_size = len(computed_keys)
     while not is_queries_satisfied(Statements, queries):
-        uncomputed = [key for key in Statements.keys() if not Statements[key].is_computed()]
-        for key in uncomputed:
-            if is_resolvable(Statements[key].value, Statements):
-                result = check_term(Statements[key].value, Statements)
-                print(f'check term {Statements[key].value}: {result}')
+        for key in list(Statements.keys()):
+            if  Statements[key].is_computed():
+                continue
+            result = check_term(Statements[key].value, Statements)
+            if result != None:
+                # print(f'check term {Statements[key].value}: {result}')
                 if len(key) == 1 and result:
                     Statements[key] = StatementValue(result)
                 else:
@@ -70,15 +74,18 @@ def solve_map(Statements: dict, queries: list) -> dict:
 
 ############ test stuff ###################
 def test():
-    expert_data = parse_expert_data("input.txt")
+    expert_data = parse_expert_data(sys.argv[1])
     init_form_initial_facts_arr(expert_data.initial_facts)
     init_from_implies_arr(expert_data.implies_arr)
+    
+
+    queries_reduced = reduce(lambda x1, x2: x1+x2, expert_data.queries).replace('?', '')
+    queries = [q for q in queries_reduced]
+    print(f'refduced queries {queries}')
 
     # for key, val in StatementMap.Statements.items():
     #     print(f'val {val.value} =>  {key}   (key)')
 
-    # queries  = ['D'] # save to expert_data.queries in this format
-    queries  = ['G', 'V', 'X'] 
     solve_map(StatementMap.Statements, queries)
     print_result(StatementMap.Statements, queries)
 
