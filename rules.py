@@ -17,9 +17,7 @@ from functools import reduce
 
 # Tasks:
 
-# rewrite check_term with split_terms
-
-# resolve_xor()
+# instantly remove !! if present
 
 # add if not check_parentheses_order(term): 
     #     raise Exception('Wrong parentheses')
@@ -37,6 +35,7 @@ def is_queries_satisfied(Statements: dict, queries: list):
 
 
 def print_result(Statements, queries):
+    print(f'\nResult:')
     for query in queries:
         if query in Statements.keys() and Statements[query].is_computed():
             print(f'{query} is {Statements[query].value}')
@@ -55,7 +54,6 @@ def solve_map(Statements: dict, queries: list) -> dict:
                 continue
             result = check_term(Statements[key].value, Statements)
             if result != None:
-                # print(f'check term {Statements[key].value}: {result}')
                 if len(key) == 1 and result:
                     Statements[key] = StatementValue(result)
                 else:
@@ -65,9 +63,9 @@ def solve_map(Statements: dict, queries: list) -> dict:
         if len(computed_keys) == old_size:
             break
         old_size = len(computed_keys)
-        print(f'computed: {computed_keys}\n')
-        for key, val in Statements.items():
-            print(f'val {val.value} =>  {key}   (key)')
+        # print(f'computed: {computed_keys}\n')
+        # for key, val in Statements.items():
+        #     print(f'val {val.value} =>  {key}   (key)')
        
     return 
 
@@ -78,10 +76,8 @@ def test():
     init_form_initial_facts_arr(expert_data.initial_facts)
     init_from_implies_arr(expert_data.implies_arr)
     
-
     queries_reduced = reduce(lambda x1, x2: x1+x2, expert_data.queries).replace('?', '')
-    queries = [q for q in queries_reduced]
-    print(f'refduced queries {queries}')
+    queries = set([q for q in queries_reduced])
 
     # for key, val in StatementMap.Statements.items():
     #     print(f'val {val.value} =>  {key}   (key)')
