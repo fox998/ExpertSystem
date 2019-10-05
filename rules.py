@@ -17,8 +17,6 @@ from functools import reduce
 
 # Tasks:
 
-# instantly remove !! if present
-
 # add if not check_parentheses_order(term): 
     #     raise Exception('Wrong parentheses')
 
@@ -54,7 +52,6 @@ def solve_map(Statements: dict, queries: list) -> dict:
             if  Statements[key].is_computed():
                 continue
             result = check_term(Statements[key].value, Statements)
-            print(f'Check term: {Statements[key].value} = {result}')
             if result == True:
                 if len(key) == 1 and result:
                     Statements[key] = StatementValue(result)
@@ -62,10 +59,10 @@ def solve_map(Statements: dict, queries: list) -> dict:
                     backward_chaining(Statements, key, result)
 
         computed_keys = [fact for fact in Statements.keys() if Statements[fact].is_computed()]
+        # print(f'computed: {computed_keys}\n')
         if len(computed_keys) == old_size:
             break
         old_size = len(computed_keys)
-        print(f'computed: {computed_keys}\n')
         # for key, val in Statements.items():
         #     print(f'val {val.value} =>  {key}   (key)')
        
@@ -81,7 +78,7 @@ def test():
     queries_reduced = reduce(lambda x1, x2: x1+x2, expert_data.queries).replace('?', '')
     queries = set([q for q in queries_reduced])
 
-
+    print(f'queries: {queries}')
     solve_map(StatementMap.Statements, queries)
     print_result(StatementMap.Statements, queries)
 

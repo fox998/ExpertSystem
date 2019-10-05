@@ -21,6 +21,7 @@ def get_literal_value(literal: str, Statements: dict):
 
 def check_term(term: str, Statements: dict):
     '''Checks if left part = term is true / false'''
+    term = term.replace('!!', '')
     terms = split_terms(term)
     if len(terms) == 1 and len(terms[0]) == 1:
         return get_literal_value(terms[0], Statements)

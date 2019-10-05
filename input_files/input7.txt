@@ -1,0 +1,10 @@
+# XOR test
+A+B => C^D
+A   => !C
+
+=AB
+
+?CD
+ 
+# True: A B  D 
+# False : C

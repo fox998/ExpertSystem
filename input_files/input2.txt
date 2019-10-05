@@ -5,3 +5,5 @@ A => B
 =A        
 
 ?D
+
+# False: D

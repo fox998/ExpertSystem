@@ -1,0 +1,10 @@
+# OR test
+A+B => C|D
+A   => !C
+
+=AB
+
+?DC
+ 
+# True: A B  D 
+# False: C

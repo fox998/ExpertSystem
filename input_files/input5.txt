@@ -1,12 +1,10 @@
+# resolve and test + implies not test
 A+B => C+D
-E|F => G
-A+B => !K
-A^K => M
-A^B => L
+E => !K
 
 =ABE
 
-?CDGKLM
+?CDK
  
-
 # True: A B E C D 
+# False: K

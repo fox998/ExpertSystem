@@ -50,5 +50,10 @@ def test():
     print(f'{s} - {split_terms(s)}')
     s = '(B^C)'
     print(f'{s} - {split_terms(s)}')
+    s = '(!A|!(!B))'
+    print(f'{s} - {split_terms(s)}')
+    s = '!A|!(!B)'
+    print(f'{s} - {split_terms(s)}')
+
 
 # test()
