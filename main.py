@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 
+import sys
 from parse_expert_data import ExpertData
 from parse_expert_data import parse_expert_data
 
@@ -32,7 +34,11 @@ def resolve_queries(queries_arr):
 
 
 if __name__ == "__main__":
-    expert_data = parse_expert_data("input.txt")
+    try:
+        input_file = sys.argv[1]
+    except:
+        exit('\033[1;31;49mProgram takes one parameter: input file. Please provide it.\033[0;37;40m')
+    expert_data = parse_expert_data(input_file)
 
     init_form_initial_facts_arr(expert_data.initial_facts)
     init_from_implies_arr(expert_data.implies_arr)

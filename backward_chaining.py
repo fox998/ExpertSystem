@@ -2,7 +2,7 @@
 
 from statement import StatementValue
 from parentheses import check_parentheses_order, split_terms
-from forward_chaining import is_resolvable, check_term
+from forward_chaining import check_term
 
 
 def resolve_xor(Statements, stack, boolean_value):
@@ -13,12 +13,10 @@ def resolve_xor(Statements, stack, boolean_value):
     op2 = check_term(helper(right), Statements)
     if isinstance(op1, bool) and isinstance(op2, bool):
         if op1 ^ op2 != boolean_value:
-            raise Exception('Given grammar is incorrect:{left}={op1}, \
+            raise Exception(f'Given grammar is incorrect:{left}={op1}, \
                 {right}={op2}, but {left}^{right} must be {boolean_value}')
         else:
             return
-    if op1 == None and op2 == None:
-        return # second layer difficulty
     if boolean_value:
         if op1 == None:
             backward_chaining(Statements, left, not op2)
@@ -42,7 +40,10 @@ def resolve_and(Statements, stack, boolean_value):
     right = stack[ind+1:]
     op1 = check_term(helper(left), Statements)
     op2 = check_term(helper(right), Statements)
-    if op1 == None and op2 == True:
+    if boolean_value:
+        backward_chaining(Statements, left, True)
+        backward_chaining(Statements, right, True)
+    elif op1 == None and op2 == True:
         backward_chaining(Statements, left, True)
         print(f'As far as {left}+{right} must be {boolean_value}, and {helper(left)} is True, then {helper(left)} = True.')
     elif op2 == None and op1 == True:
@@ -64,16 +65,12 @@ def or_case_true(Statements, left, right):
     op2 = check_term(helper(right), Statements)
     if op1 == None and op2 == None:
         return
-    elif op1 == False and op2 == False:
-        raise Exception(f'Given grammar is incorrect: {helper(left)}={op1}, \
-            {helper(right)}={op2}, but {helper(left)}+{helper(right)} must be True')
     elif op1 == False:
         backward_chaining(Statements, right, True)
         print(f'As far as {left}|{right} and {left} is False, then {right} = True.')
     elif op2 == False:
         backward_chaining(Statements, right, True)
         print(f'As far as {left}|{right} and {right} is False, then {left} = True.')
-
 
 
 def resolve_or(Statements, stack, boolean_value):
@@ -104,6 +101,10 @@ def backward_chaining(Statements, stack, boolean_value):
         resolve_not(Statements, stack, boolean_value)
     elif len(stack) == 1:
         if len(stack[0]) == 1:
+            if stack[0] in Statements.keys() and Statements[stack[0]].is_computed() and \
+            Statements[stack[0]].value != boolean_value:
+                exit(f'Grammar is ambiguos. Different rules imply different result for same fact.\
+                    {stack[0]} = {Statements[stack[0].value]}, though another rules implies it = {boolean_value}')
             Statements[stack[0]] = StatementValue(boolean_value)
         else:
             backward_chaining(Statements, split_terms(stack[0]), boolean_value)

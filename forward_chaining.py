@@ -13,23 +13,17 @@ def do_operation(operation, operand1, operand2):
         return (operand1 ^ operand2)
 
 
-def is_resolvable(term: str, Statements: dict):
-    ''' Checks if part of rule has computed literals(A, B, ...)'''
-    for op in '()!+|^':
-        term = term.replace(op, '')
-    for literal in term:
-        if literal not in Statements.keys() or not Statements[literal].is_computed():
-            return False
-    return True
+def get_literal_value(literal: str, Statements: dict):
+    if literal in Statements.keys() and Statements[literal].is_computed():
+        return Statements[literal].value
+    return False
 
 
 def check_term(term: str, Statements: dict):
     '''Checks if left part = term is true / false'''
-    if not is_resolvable(term, Statements):
-        return None
     terms = split_terms(term)
     if len(terms) == 1 and len(terms[0]) == 1:
-        return Statements[terms[0]].value
+        return get_literal_value(terms[0], Statements)
     stack = []
     i = 0
     while i < len(terms):

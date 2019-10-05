@@ -9,7 +9,7 @@ from statement import init_form_initial_facts_arr
 from statement import init_from_implies_arr
 from statement import StatementMap, StatementValue
 
-from forward_chaining import is_resolvable, check_term
+from forward_chaining import check_term
 from backward_chaining import backward_chaining
 
 import sys
@@ -35,12 +35,13 @@ def is_queries_satisfied(Statements: dict, queries: list):
 
 
 def print_result(Statements, queries):
-    print(f'\nResult:')
+    print(f'\033[1;32;49m\nResult:')
     for query in queries:
         if query in Statements.keys() and Statements[query].is_computed():
             print(f'{query} is {Statements[query].value}')
         else:
-            print(f'{query} cannot be computed with given rules.')
+            print(f'{query} cannot be computed with given rules. So by default {query} is False.')
+    print('\033[0;37;40m')
     return
 
 
@@ -53,7 +54,8 @@ def solve_map(Statements: dict, queries: list) -> dict:
             if  Statements[key].is_computed():
                 continue
             result = check_term(Statements[key].value, Statements)
-            if result != None:
+            print(f'Check term: {Statements[key].value} = {result}')
+            if result == True:
                 if len(key) == 1 and result:
                     Statements[key] = StatementValue(result)
                 else:
@@ -63,7 +65,7 @@ def solve_map(Statements: dict, queries: list) -> dict:
         if len(computed_keys) == old_size:
             break
         old_size = len(computed_keys)
-        # print(f'computed: {computed_keys}\n')
+        print(f'computed: {computed_keys}\n')
         # for key, val in Statements.items():
         #     print(f'val {val.value} =>  {key}   (key)')
        
@@ -79,10 +81,9 @@ def test():
     queries_reduced = reduce(lambda x1, x2: x1+x2, expert_data.queries).replace('?', '')
     queries = set([q for q in queries_reduced])
 
-    # for key, val in StatementMap.Statements.items():
-    #     print(f'val {val.value} =>  {key}   (key)')
 
     solve_map(StatementMap.Statements, queries)
     print_result(StatementMap.Statements, queries)
+
 
 test()
