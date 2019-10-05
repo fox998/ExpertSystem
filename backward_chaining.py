@@ -45,7 +45,7 @@ def resolve_xor(Statements, stack, boolean_value):
     else:
         if op1 == None:
             backward_chaining(Statements, left, op2)
-            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(right)} is {op2}, then {helper(left)} = {not op2}.')
+            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(right)} is {op2}, then {helper(left)} = {op2}.')
         elif op2 == None:
             backward_chaining(Statements, right, op1)
             print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(left)} is {op1}, then {helper(right)} = {op1}.')
