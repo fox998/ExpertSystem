@@ -29,8 +29,8 @@ def resolve_xor(Statements, stack, boolean_value):
     op2 = backward_check(helper(right), Statements)
     if isinstance(op1, bool) and isinstance(op2, bool):
         if op1 ^ op2 != boolean_value:
-            raise Exception(f'Given grammar is incorrect:{left}={op1}, \
-                {right}={op2}, but {left}^{right} must be {boolean_value}')
+            raise Exception(f'Given grammar is incorrect:{helper(left)}={op1}, \
+                {helper(right)}={op2}, but {helper(left)}^{helper(right)} must be {boolean_value}')
         else:
             return
     if op1 == None and op2 == None:
@@ -38,17 +38,17 @@ def resolve_xor(Statements, stack, boolean_value):
     if boolean_value:
         if op1 == None:
             backward_chaining(Statements, left, not op2)
-            print(f'As far as {left}^{right} must be {boolean_value}, and {helper(right)} is {op2}, then {helper(left)} = {not op2}.')
+            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(right)} is {op2}, then {helper(left)} = {not op2}.')
         elif op2 == None:
             backward_chaining(Statements, right, not op1)
-            print(f'As far as {left}^{right} must be {boolean_value}, and {helper(left)} is {op1}, then {helper(right)} = {not op1}.')
+            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(left)} is {op1}, then {helper(right)} = {not op1}.')
     else:
         if op1 == None:
             backward_chaining(Statements, left, op2)
-            print(f'As far as {left}^{right} must be {boolean_value}, and {helper(right)} is {op2}, then {helper(left)} = {not op2}.')
+            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(right)} is {op2}, then {helper(left)} = {not op2}.')
         elif op2 == None:
             backward_chaining(Statements, right, op1)
-            print(f'As far as {left}^{right} must be {boolean_value}, and {helper(left)} is {op1}, then {helper(right)} = {op1}.')
+            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(left)} is {op1}, then {helper(right)} = {op1}.')
 
 
 def resolve_and(Statements, stack, boolean_value):
@@ -63,10 +63,10 @@ def resolve_and(Statements, stack, boolean_value):
         backward_chaining(Statements, right, True)
     elif op1 == None and op2 == True:
         backward_chaining(Statements, left, True)
-        print(f'As far as {left}+{right} must be {boolean_value}, and {helper(left)} is True, then {helper(left)} = True.')
+        print(f'As far as {helper(left)}+{helper(right)} must be {boolean_value}, and {helper(left)} is True, then {helper(left)} = True.')
     elif op2 == None and op1 == True:
         backward_chaining(Statements, helper(right), True)
-        print(f'As far as {left}+{right} must be {boolean_value}, and {helper(right)} is True, then {helper(right)} = True.')
+        print(f'As far as {helper(left)}+{helper(right)} must be {boolean_value}, and {helper(right)} is True, then {helper(right)} = True.')
     return 
 
 
@@ -85,10 +85,10 @@ def or_case_true(Statements, left, right):
         return
     elif op1 == False:
         backward_chaining(Statements, right, True)
-        print(f'As far as {left}|{right} and {left} is False, then {right} = True.')
+        print(f'As far as {helper(left)}|{helper(right)} and {helper(left)} is False, then {helper(right)} = True.')
     elif op2 == False:
         backward_chaining(Statements, right, True)
-        print(f'As far as {left}|{right} and {right} is False, then {left} = True.')
+        print(f'As far as {helper(left)}|{helper(right)} and {helper(right)} is False, then {helper(left)} = True.')
 
 
 def resolve_or(Statements, stack, boolean_value):
