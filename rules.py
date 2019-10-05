@@ -22,6 +22,9 @@ from functools import reduce
 
 # bonus: compute all possible facts
 # bonus: biconditional rules
+# explanations
+# or and xor in the right part 
+#
 
 def is_queries_satisfied(Statements: dict, queries: list):
     '''Checks if we have computed all queries and have nothing to do else) '''

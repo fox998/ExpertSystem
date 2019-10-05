@@ -21,34 +21,23 @@ def backward_check(term, Statements):
     return None
 
 
-def resolve_xor(Statements, stack, boolean_value):
+def resolve_xor(Statements, stack, bool_value):
     ind = stack.index('^')
     left = stack[:ind]
     right = stack[ind+1:]
     op1 = backward_check(helper(left), Statements)
     op2 = backward_check(helper(right), Statements)
-    if isinstance(op1, bool) and isinstance(op2, bool):
-        if op1 ^ op2 != boolean_value:
-            raise Exception(f'Given grammar is incorrect:{helper(left)}={op1}, \
-                {helper(right)}={op2}, but {helper(left)}^{helper(right)} must be {boolean_value}')
-        else:
-            return
     if op1 == None and op2 == None:
         return
-    if boolean_value:
-        if op1 == None:
-            backward_chaining(Statements, left, not op2)
-            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(right)} is {op2}, then {helper(left)} = {not op2}.')
-        elif op2 == None:
-            backward_chaining(Statements, right, not op1)
-            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(left)} is {op1}, then {helper(right)} = {not op1}.')
-    else:
-        if op1 == None:
-            backward_chaining(Statements, left, op2)
-            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(right)} is {op2}, then {helper(left)} = {op2}.')
-        elif op2 == None:
-            backward_chaining(Statements, right, op1)
-            print(f'As far as {helper(left)}^{helper(right)} must be {boolean_value}, and {helper(left)} is {op1}, then {helper(right)} = {op1}.')
+    if op1 == None:
+        backward_chaining(Statements, left, not op2)
+        print(f'As far as {helper(left)}^{helper(right)} must be {bool_value}, and {helper(right)} is {op2}, then {helper(left)} = {bool_value^op2}.')
+    elif op2 == None:
+        backward_chaining(Statements, right, not op1)
+        print(f'As far as {helper(left)}^{helper(right)} must be {bool_value}, and {helper(left)} is {op1}, then {helper(right)} = {bool_value^op1}.')
+    elif op1 ^ op2 != bool_value:
+            raise Exception(f'Given grammar is incorrect:{helper(left)}={op1}, \
+                {helper(right)}={op2}, but {helper(left)}^{helper(right)} must be {bool_value}')
 
 
 def resolve_and(Statements, stack, boolean_value):

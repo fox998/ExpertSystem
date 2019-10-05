@@ -40,20 +40,3 @@ def check_parentheses_order(term: str):
             return False
     return (c == 0)
 
-
-def test():
-    s = '(A+((!B+D)+E)|F)'
-    print(f'{s} - {split_terms(s)}')
-    s = '(A)|F'
-    print(f'{s} - {split_terms(s)}')
-    s = 'A'
-    print(f'{s} - {split_terms(s)}')
-    s = '(B^C)'
-    print(f'{s} - {split_terms(s)}')
-    s = '(!A|!(!B))'
-    print(f'{s} - {split_terms(s)}')
-    s = '!A|!(!B)'
-    print(f'{s} - {split_terms(s)}')
-
-
-# test()

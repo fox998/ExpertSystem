@@ -2,10 +2,13 @@
 A+B => C^D
 A   => !C
 A   => !(D^E)
+A   => !D^E
+A => A^A
+
 
 =AB
 
 ?CDE
  
 # True: A B  D 
-# False : C
+# False : C E
