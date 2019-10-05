@@ -7,6 +7,9 @@ from parse_expert_data import parse_expert_data
 from statement import init_form_initial_facts_arr
 from statement import init_from_implies_arr
 from statement import StatementMap
+from statement import StatementValue
+
+from parentheses import split_terms
 
 
 def check_queries_format(queries):
@@ -14,7 +17,33 @@ def check_queries_format(queries):
         raise Exception('wrong format of initial facts')
 
 
+def is_operantion(value: str) -> bool:
+    return value in '+|^!'
+
+
+def compute_statement(statement: str):
+    terms_arr = split_terms(statement)
+    stack = []
+    for term in terms_arr:
+        if is_operantion(term):
+            
+        else:
+            stack.append(resolve_statement(term))
+    return False
+
+
 def resolve_statement(fact):
+
+    if fact in StatementMap.Statements.keys():
+        value = StatementMap.Statements[fact]
+        if value.is_computed():
+            return value.value
+        else:
+
+            computed_value = compute_statement(value.value)
+            StatementMap.Statements[fact] = computed_value
+            return computed_value 
+
     return False
 
 

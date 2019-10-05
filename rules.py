@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from pyparsing import *
+#from pyparsing import *
 
 from parse_expert_data import ExpertData
 from parse_expert_data import parse_expert_data
@@ -66,9 +66,6 @@ def solve_map(Statements: dict, queries: list) -> dict:
         if len(computed_keys) == old_size:
             break
         old_size = len(computed_keys)
-        # for key, val in Statements.items():
-        #     print(f'val {val.value} =>  {key}   (key)')
-       
     return 
 
 
