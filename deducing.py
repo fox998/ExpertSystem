@@ -30,6 +30,7 @@ def compute_statement(statement: str):
         i += 1
     if len(stack) != 1:
         exit(f'Error: {statement} has wrong format.')
+    print(f'statement: {statement}, stack = {stack}')
     return stack.pop()
 
 
@@ -56,7 +57,8 @@ def resolve_statement(fact):
 
 def  deduce_not(fact: str, complex_fact: str):
     value = StatementMap.Statements[complex_fact].value # no need for check: called from resolve_statement
-    return not resolve_statement(value) # should call comptuted. smth wrong with logic
+    return not compute_statement(value) # should call comptuted. smth wrong with logic
+    # return not resolve_statement(value) # should call comptuted. smth wrong with logic
 
 
 def deduce_and(fact: str, complex_fact: str):
@@ -71,7 +73,7 @@ def deduce(fact: str, complex_fact: str):
     elif '^' in complex_fact:
         pass # bonus
     elif '+' in complex_fact:
-        deduce_and(fact, complex_fact)
+        return deduce_and(fact, complex_fact)
     elif '!' in complex_fact: # at this point complex fact can only have letters or !
-        deduce_not(fact, complex_fact)
+        return deduce_not(fact, complex_fact)
     return False
