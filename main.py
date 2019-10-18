@@ -24,7 +24,7 @@ def check_queries_format(queries):
 
 def resolve_facts(facts_arr: list):
     for fact in facts_arr:
-        print(f'{fact} => {resolve_statement(fact)}')
+        print(f'\033[1;34;49m{fact} => {resolve_statement(fact)}\033[0;37;49m')
 
 
 def resolve_queries(queries_arr: list):
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     try:
         input_file = sys.argv[1]
     except:
-        exit('\033[1;31;49mProgram takes one parameter: input file. Please provide it.\033[0;37;40m')
+        exit('\033[1;31;49mProgram takes one parameter: input file. Please provide it.\033[0;31;49m')
     expert_data = parse_expert_data(input_file)
 
     init_form_initial_facts_arr(expert_data.initial_facts)
