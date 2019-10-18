@@ -10,52 +10,12 @@ from statement import StatementMap
 from statement import StatementValue
 
 from parentheses import split_terms
-from forward_chaining import do_operation
+from deducing import resolve_statement
+
 
 def check_queries_format(queries):
     if not isinstance(queries, str) or len(queries) < 2 or queries[0] != '?':
         raise Exception('wrong format of initial facts')
-
-
-def is_operation(value: str) -> bool:
-    return value in '+|^!'
-
-
-def compute_statement(statement: str):
-    terms_arr = split_terms(statement)
-    stack = []
-    i = 0
-    while i < len(terms_arr): # cant use for : i can have different increment value
-        if is_operation(terms_arr[i]):
-            if terms_arr[i] == '!':
-                stack.append(not resolve_statement(terms_arr[i+1]))
-            else:
-                operand1 = stack.pop()
-                operand2 = resolve_statement(terms_arr[i+1])
-                result = do_operation(terms_arr[i], operand1, operand2)
-                stack.append(result)
-            i += 1  # because we used operand = terms_arr[i+1]
-        else:
-            stack.append(resolve_statement(terms_arr[i]))
-        i += 1
-    if len(stack) != 1:
-        exit(f'Error: {statement} has wrong format.')
-    return stack.pop()
-
-
-def resolve_statement(fact):
-    print(f'resolve {fact}\n')
-    if fact in StatementMap.Statements.keys(): # we should also check if it is a part of a key. for ex V is in !V
-        value = StatementMap.Statements[fact]
-        if value.is_computed():
-            return value.value
-        else:
-
-            computed_value = compute_statement(value.value)
-            StatementMap.Statements[fact] = StatementValue(computed_value)
-            return computed_value 
-
-    return False
 
 
 def resolve_facts(facts_arr: list):
