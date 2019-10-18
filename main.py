@@ -13,9 +13,6 @@ from parentheses import split_terms
 from deducing import resolve_statement
 
 
-# remake split terms for A+!B.
-# now -> A, +, !, B
-# shoild be: A, +, !B
 
 def check_queries_format(queries):
     if not isinstance(queries, str) or len(queries) < 2 or queries[0] != '?':

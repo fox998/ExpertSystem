@@ -57,8 +57,7 @@ def resolve_statement(fact):
 
 def  deduce_not(fact: str, complex_fact: str):
     value = StatementMap.Statements[complex_fact].value # no need for check: called from resolve_statement
-    return not compute_statement(value) # should call comptuted. smth wrong with logic
-    # return not resolve_statement(value) # should call comptuted. smth wrong with logic
+    return not compute_statement(value)
 
 
 def deduce_and(fact: str, complex_fact: str):
