@@ -44,7 +44,7 @@ def compute_statement(statement: str):
 
 
 def resolve_statement(fact):
-    print(f'resolve {fact}')
+    print(f'resolve {fact}\n')
     if fact in StatementMap.Statements.keys(): # we should also check if it is a part of a key. for ex V is in !V
         value = StatementMap.Statements[fact]
         if value.is_computed():
@@ -52,7 +52,7 @@ def resolve_statement(fact):
         else:
 
             computed_value = compute_statement(value.value)
-            StatementMap.Statements[fact] = computed_value
+            StatementMap.Statements[fact] = StatementValue(computed_value)
             return computed_value 
 
     return False
