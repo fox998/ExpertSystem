@@ -29,7 +29,7 @@ def check_operations_order(stack: list) -> list:
         return stack
 
     corrected_stack = []
-    operation = operations_list[order.index(min(order))]
+    operation = operations_list[order.index(max(order))]
     ind = stack.index(operation)
     corrected_stack.append( reduce(lambda x1, x2: x1+x2, stack[:ind]) )
     corrected_stack.append(operation)
