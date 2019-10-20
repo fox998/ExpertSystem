@@ -10,12 +10,13 @@ def is_operation(value: str) -> bool:
     return value in '+|^!'
 
 
+# make operations order correct in split_terms
 def compute_statement(statement: str):
     print(f'compute statement: {statement}')
     terms_arr = split_terms(statement)
     stack = []
     i = 0
-    while i < len(terms_arr): # cant use for : i can have different increment value
+    while i < len(terms_arr):
         if is_operation(terms_arr[i]):
             if terms_arr[i] == '!':
                 stack.append(not resolve_statement(terms_arr[i+1]))
@@ -30,13 +31,11 @@ def compute_statement(statement: str):
         i += 1
     if len(stack) != 1:
         exit(f'Error: {statement} has wrong format.')
-    print(f'statement: {statement}, stack = {stack}')
     return stack.pop()
 
 
 
 def resolve_statement(fact):
-    print(f'resolve {fact}\n')
     if fact in StatementMap.Statements.keys():
         value = StatementMap.Statements[fact]
         if value.is_computed():
@@ -46,25 +45,39 @@ def resolve_statement(fact):
             computed_value = compute_statement(value.value)
             StatementMap.Statements[fact] = StatementValue(computed_value)
             return computed_value 
-    # also check if fact (for example V) is a part of fact (ex. V+A or !V)
+    
     for key in StatementMap.Statements.keys():
         if fact in key:
-            print(f'{fact} in {key}')
-            return deduce(fact, key)
+            return deduce(fact, key, key)
     return False
 
 
 
-def  deduce_not(fact: str, complex_fact: str):
-    value = StatementMap.Statements[complex_fact].value # no need for check: called from resolve_statement
+def  deduce_not(fact: str, complex_fact: str, key_value: str):
+    print(f'{complex_fact} is true, then {fact} is false')
+    value = StatementMap.Statements[key_value].value
     return not compute_statement(value)
 
 
-def deduce_and(fact: str, complex_fact: str):
-    return
+
+def deduce_and(fact: str, complex_fact: str, key_value: str):
+    print(f'AND: complex_fact = {complex_fact}, fact= {fact}')
+    # ex. complex fact : A+B
+    ind = complex_fact.index('+')
+    operand = complex_fact[:ind]
+    if fact not in operand:
+        operand = complex_fact[ind+1:]
+        
+    print(f'{complex_fact} is true, then {operand} must be true')
+    if len(operand) == 1:
+        value = StatementMap.Statements[key_value].value
+        return compute_statement(value)
+
+    return deduce(fact, operand, key_value)
 
 
-def deduce(fact: str, complex_fact: str):
+
+def deduce(fact: str, complex_fact: str, key_value: str):
     '''Deduces fact (ex V) from complex fact(ex !V or (V+A)'''
     '''Returns bool'''
     if '|' in complex_fact:
@@ -72,7 +85,8 @@ def deduce(fact: str, complex_fact: str):
     elif '^' in complex_fact:
         pass # bonus
     elif '+' in complex_fact:
-        return deduce_and(fact, complex_fact)
+        return deduce_and(fact, complex_fact, key_value)
     elif '!' in complex_fact: # at this point complex fact can only have letters or !
-        return deduce_not(fact, complex_fact)
+        return deduce_not(fact, complex_fact, key_value)
     return False
+
