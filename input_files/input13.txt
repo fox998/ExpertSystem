@@ -2,11 +2,11 @@ B + !C => A
 
 ?A 
 
- =B
+=B
 #A should be true. 
 
 =C
 #A should be false. 
 
-=BC
+#=BC
 # A should be false. 

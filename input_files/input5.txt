@@ -1,6 +1,6 @@
 # resolve and test + implies not test
-A+B => C+D
-E => !K
+A+B => C+D+K
+#E => !K
 
 =ABE
 
