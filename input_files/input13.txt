@@ -1,0 +1,12 @@
+B + !C => A 
+
+?A 
+
+ =B
+#A should be true. 
+
+=C
+#A should be false. 
+
+=BC
+# A should be false. 

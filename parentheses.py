@@ -24,7 +24,11 @@ def split_terms(term: str) -> list:
         shift, item = get_next_item(term[i:])
         if item[0] == '(' and item[-1] == ')' and check_parentheses_order(item[1:-1]):
             item = item[1:-1]
-        stack.append(item)
+        
+        if len(stack) > 2 and stack[-2] in '+^|' and stack[-1] == '!':
+            stack[-1] = '!' + item
+        else:
+            stack.append(item)
         i = i + shift
     return stack
 
@@ -40,3 +44,16 @@ def check_parentheses_order(term: str):
             return False
     return (c == 0)
 
+
+def test():
+    s = '!A+(B|C)'
+    print(f'{s} = {split_terms(s)}')
+    s = '!A+B'
+    print(f'{s} = {split_terms(s)}')
+    s = 'A+!B'
+    print(f'{s} = {split_terms(s)}')
+    s = '!A'
+    print(f'{s} = {split_terms(s)}')
+
+
+# test()
